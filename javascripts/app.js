@@ -90,7 +90,6 @@ var InputBookView = Backbone.View.extend({
 
 });
 
-var input_book = new InputBookView();
 
 var BookListView = Backbone.View.extend({
     initialize: function(options){
@@ -138,11 +137,65 @@ var Books = Backbone.Collection.extend({
 
 });
 
-books = new Books([])
+var JST = {}
+JST["main_view"] = _.template(' <h1>Books App</h1> \
+  <div id="form-container"> \
+  <form> \
+    <input type="text" id="book-title"> \
+    <input type="text" id="book-author"> \
+    <input type="submit" value="Add" id="add-button"> \
+  </form> \
+  <span></span> \
+  </div> \
+  <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
+  </div>')
 
-var childBookListView = new BookListView({
-    books: books
+var MainView = Backbone.View.extend({
+    el: "#some_container",
+    template: JST["main_view"],
+
+    render: function(){
+        $(this.el).html(this.template());
+    }
 });
 
-childBookListView.render();
+
+var main_view = new MainView();
+
+var Router = Backbone.Router.extend({
+    routes: {
+        "" : "defaultPath",
+        "books" : "booksIndex",
+        "show" :  "showBooks"
+    },
+
+    defaultPath: function(){
+        console.log("lalala");
+        $("#some_container").html("");
+    },
+
+    booksIndex: function(){
+        console.log ("andito ko sa books Index");
+        //printing
+        main_view = main_view || new MainView();
+        main_view.render();
+        var input_book = new InputBookView();
+        books = new Books([])
+
+        var childBookListView = new BookListView({
+            books: books
+        });
+
+        childBookListView.render();
+
+    },
+
+    showBooks: function(){
+        $("#some_container").html("");
+    }
+});
+
+var router = new Router();
+Backbone.history.start();
+
 
