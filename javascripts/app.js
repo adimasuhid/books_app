@@ -19,13 +19,8 @@ var BookView = Backbone.View.extend({
         return this
     },
 
-    showBookHolder: function(){
-        console.log( $(".book-holder") );
-    },
     deleteBook: function(){
         this.book.collection.remove(this.book.id);
-        console.log(this);
-        console.log(this.book.id)
         this.remove();
     },
 
@@ -49,16 +44,14 @@ var InputBookView = Backbone.View.extend({
         this.book_author.val(this.defaultAuthorValue);
         this.book_author.addClass("inactive-form");
     },
-    render: function() {
-        this.clear();
-    },
     events: {
         "click #book-title": "clearTitleDefaults",
         "focusout #book-title": "setTitleDefaults",
         "click #book-author": "clearAuthorDefaults",
         "focusout #book-author": "setAuthorDefaults",
 
-        "click #add-button": "addBook"
+        "click #add-button": "addBook",
+        "click #show-book": "showBook"
     },
 
     addBook: function(e){
@@ -67,6 +60,14 @@ var InputBookView = Backbone.View.extend({
         books.add({title: this.book_title.val(), author: this.book_author.val(), id: id})
         this.book_title.val("");
         this.book_author.val("");
+    },
+
+    showBook: function(){
+        router.navigate("show", {trigger: true});
+        router.on("route:booksIndex", function(books) {
+            console.log(books);
+        });
+
     },
 
     clearTitleDefaults: function(){
@@ -83,10 +84,6 @@ var InputBookView = Backbone.View.extend({
             this.book_author.val("");
         }
     },
-
-    clear: function(){
-        $(this.el).empty();
-    }
 
 });
 
@@ -114,6 +111,47 @@ var BookListView = Backbone.View.extend({
         $(this.el).empty();
     }
 
+});
+
+
+var ShowBook = Backbone.View.extend({
+    initialize: function(options){
+        this.book = options.book;
+    },
+
+    template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span></div>"),
+
+    render: function(){
+        this.clear();
+        $(this.el).html(this.template({
+            title: this.book.get("title"),
+            author: this.book.get("author")
+        }));
+
+        return this
+    },
+
+    clear: function(){
+        $(this.el).empty();
+    }
+
+});
+
+
+var ShowListView = Backbone.View.extend({
+
+    initialize: function(options){
+        this.book = options.books;
+        console.log(this.book);
+    },
+    el: ".book-holder",
+    render: function(){
+        var that = this;
+        this.books.each(function(model){
+            var childBookShowView = new ShowBook({book:model});
+            $(that.el).append(childBookView.render().el);
+        });
+    },
 });
 
 var Book = Backbone.Model.extend({
@@ -144,6 +182,7 @@ JST["main_view"] = _.template(' <h1>Books App</h1> \
     <input type="text" id="book-title"> \
     <input type="text" id="book-author"> \
     <input type="submit" value="Add" id="add-button"> \
+    <button id="show-book">Show</button>\
   </form> \
   <span></span> \
   </div> \
@@ -159,8 +198,23 @@ var MainView = Backbone.View.extend({
     }
 });
 
-
 var main_view = new MainView();
+
+var JST = {}
+JST["show_view"] = _.template(' <h1>Books Show</h1> \
+  <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
+  </div>')
+
+var ShowView = Backbone.View.extend({
+    el: "#some_container",
+    template: JST["show_view"],
+
+    render: function(){
+        $(this.el).html(this.template());
+    }
+});
+
+var show_view = new ShowView();
 
 var Router = Backbone.Router.extend({
     routes: {
@@ -177,7 +231,7 @@ var Router = Backbone.Router.extend({
     booksIndex: function(){
         console.log ("andito ko sa books Index");
         //printing
-        main_view = main_view || new MainView();
+        main_view = new MainView();
         main_view.render();
         var input_book = new InputBookView();
         books = new Books([])
@@ -191,7 +245,15 @@ var Router = Backbone.Router.extend({
     },
 
     showBooks: function(){
-        $("#some_container").html("");
+        show_main = new ShowView();
+        show_view.render();
+
+        //var books = new Books([])
+        //var childShowListView = new ShowListView({
+            //books: books
+        //});
+
+        //childShowListView.render();
     }
 });
 
