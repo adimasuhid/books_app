@@ -52,7 +52,8 @@ var InputBookView = Backbone.View.extend({
         "focusout #book-author": "setAuthorDefaults",
 
         "click #add-button": "addBook",
-        "click #show-book": "showBook"
+        "click #show-book": "showBook",
+        "click #show-book-list": "showBookList"
     },
 
     addBook: function(e){
@@ -65,7 +66,10 @@ var InputBookView = Backbone.View.extend({
 
     showBook: function(){
         router.navigate("show", {trigger: true});
-        console.log(this.books);
+    },
+
+    showBookList: function(){
+        router.navigate("books", {trigger: true});
     },
 
     clearTitleDefaults: function(){
@@ -180,8 +184,9 @@ JST["main_view"] = _.template(' <h1>Books App</h1> \
     <input type="text" id="book-title"> \
     <input type="text" id="book-author"> \
     <input type="submit" value="Add" id="add-button"> \
-    <button id="show-book">Show</button>\
   </form> \
+  <button id="show-book-list">Edit Books</button>\
+  <button id="show-book">Show</button>\
   <span></span> \
   </div> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
@@ -215,6 +220,10 @@ var ShowView = Backbone.View.extend({
 var show_view = new ShowView();
 
 var Router = Backbone.Router.extend({
+    initialize: function(){
+        this.book_list = new Books([])
+    },
+
     routes: {
         "" : "defaultPath",
         "books" : "booksIndex",
@@ -231,7 +240,7 @@ var Router = Backbone.Router.extend({
         //printing
         main_view = new MainView();
         main_view.render();
-        books = new Books([])
+        books = this.book_list
 
         var input_book = new InputBookView({
             books: books
@@ -248,15 +257,13 @@ var Router = Backbone.Router.extend({
         show_main = new ShowView();
         show_view.render();
 
-        books = new Books([])
-
         var childBookListView = new BookListView({
-            books: books
+            books: this.book_list
         });
 
         childBookListView.render();
+        console.log(this.book_list);
 
-        console.log(router.booksIndex);
 
         //var books = new Books([])
         //var childShowListView = new ShowListView({
