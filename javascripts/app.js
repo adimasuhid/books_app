@@ -34,7 +34,8 @@ var InputBookView = Backbone.View.extend({
     el: "#form-container",
     defaultTitleValue: "Title",
     defaultAuthorValue: "Author",
-    initialize: function(){
+    initialize: function(options){
+        this.books = options.books;
         this.book_title = $("#book-title");
         this.book_author = $("#book-author");
         this.form_book = $("form");
@@ -64,10 +65,7 @@ var InputBookView = Backbone.View.extend({
 
     showBook: function(){
         router.navigate("show", {trigger: true});
-        router.on("route:booksIndex", function(books) {
-            console.log(books);
-        });
-
+        console.log(this.books);
     },
 
     clearTitleDefaults: function(){
@@ -233,9 +231,11 @@ var Router = Backbone.Router.extend({
         //printing
         main_view = new MainView();
         main_view.render();
-        var input_book = new InputBookView();
         books = new Books([])
 
+        var input_book = new InputBookView({
+            books: books
+        });
         var childBookListView = new BookListView({
             books: books
         });
@@ -247,6 +247,16 @@ var Router = Backbone.Router.extend({
     showBooks: function(){
         show_main = new ShowView();
         show_view.render();
+
+        books = new Books([])
+
+        var childBookListView = new BookListView({
+            books: books
+        });
+
+        childBookListView.render();
+
+        console.log(router.booksIndex);
 
         //var books = new Books([])
         //var childShowListView = new ShowListView({
