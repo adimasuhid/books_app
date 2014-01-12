@@ -7,6 +7,7 @@ var BookView = Backbone.View.extend({
     events: {
         "click" : "deleteBook",
     },
+
     template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span></div>"),
 
     render: function(){
@@ -30,6 +31,22 @@ var BookView = Backbone.View.extend({
 
 });
 
+var NavigateBookApp = Backbone.View.extend({
+    el: "nav",
+    events: {
+        "click #show-page" : "showPage",
+        "click #add-page"  : "addPage"
+    },
+
+    showPage: function(){
+        router.navigate("show", {trigger: true});
+    },
+
+    addPage: function(){
+        router.navigate("books", {trigger: true});
+    }
+});
+
 var InputBookView = Backbone.View.extend({
     el: "#form-container",
     defaultTitleValue: "Title",
@@ -45,15 +62,14 @@ var InputBookView = Backbone.View.extend({
         this.book_author.val(this.defaultAuthorValue);
         this.book_author.addClass("inactive-form");
     },
-    events: {
-        "click #book-title": "clearTitleDefaults",
-        "focusout #book-title": "setTitleDefaults",
-        "click #book-author": "clearAuthorDefaults",
-        "focusout #book-author": "setAuthorDefaults",
 
-        "click #add-button": "addBook",
-        "click #show-book": "showBook",
-        "click #show-book-list": "showBookList"
+    events: {
+        "click #book-title"     : "clearTitleDefaults",
+        "focusout #book-title"  : "setTitleDefaults",
+        "click #book-author"    : "clearAuthorDefaults",
+        "focusout #book-author" : "setAuthorDefaults",
+
+        "click #add-button"     : "addBook",
     },
 
     addBook: function(e){
@@ -64,14 +80,6 @@ var InputBookView = Backbone.View.extend({
         this.book_author.val("");
     },
 
-    showBook: function(){
-        router.navigate("show", {trigger: true});
-    },
-
-    showBookList: function(){
-        router.navigate("books", {trigger: true});
-    },
-
     clearTitleDefaults: function(){
         if( this.book_title.hasClass("inactive-form") ){
             this.book_title.addClass("active-form")
@@ -79,6 +87,7 @@ var InputBookView = Backbone.View.extend({
             this.book_title.val("");
         }
     },
+
     clearAuthorDefaults: function(){
         if( this.book_author.hasClass("inactive-form") ){
             this.book_author.addClass("active-form")
@@ -89,10 +98,8 @@ var InputBookView = Backbone.View.extend({
 
 });
 
-
 var BookListView = Backbone.View.extend({
     initialize: function(options){
-        this.ace = "lallalalaa";
         this.books = options.books;
         this.books.on("add", this.render, this);
     },
@@ -115,10 +122,12 @@ var BookListView = Backbone.View.extend({
 
 });
 
-
 var ShowBook = Backbone.View.extend({
     initialize: function(options){
         this.book = options.book;
+    },
+    events: {
+        "click #add-book" : "addBookPage"
     },
 
     template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span></div>"),
@@ -133,12 +142,15 @@ var ShowBook = Backbone.View.extend({
         return this
     },
 
+    addBookPage: function(){
+       router.navigate("books", {trigger:true});
+    },
+
     clear: function(){
         $(this.el).empty();
     }
 
 });
-
 
 var ShowListView = Backbone.View.extend({
 
@@ -152,8 +164,9 @@ var ShowListView = Backbone.View.extend({
             var childBookShowView = new ShowBook({book:model});
             $(that.el).append(childBookShowView.render().el);
         });
-    },
+    }
 });
+
 
 var Book = Backbone.Model.extend({
     changeTitle: function(title){
@@ -184,9 +197,9 @@ JST["main_view"] = _.template(' <h1>Books App</h1> \
     <input type="text" id="book-author"> \
     <input type="submit" value="Add" id="add-button"> \
   </form> \
-  <button id="show-book-list">Edit Books</button>\
-  <button id="show-book">Show</button>\
-  <span></span> \
+  </div>
+  <div id="nav"> \
+  <button id="show-book">Show</button> \
   </div> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
@@ -204,6 +217,9 @@ var main_view = new MainView();
 
 var JST = {}
 JST["show_view"] = _.template(' <h1>Books Show</h1> \
+  <div id="nav"> \
+  <button id="add-book">Add Book</button> \
+  </div> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
 
@@ -224,19 +240,16 @@ var Router = Backbone.Router.extend({
     },
 
     routes: {
-        "" : "defaultPath",
+        ""      : "defaultPath",
         "books" : "booksIndex",
-        "show" :  "showBooks"
+        "show"  : "showBooks"
     },
 
     defaultPath: function(){
-        console.log("lalala");
         $("#some_container").html("");
     },
 
     booksIndex: function(){
-        console.log ("andito ko sa books Index");
-        //printing
         main_view = new MainView();
         main_view.render();
         books = this.book_list
@@ -256,18 +269,11 @@ var Router = Backbone.Router.extend({
         show_view = new ShowView();
         show_view.render();
 
-        //var childBookListView = new BookListView({
-            //books: this.book_list
-        //});
-
-        //childBookListView.render();
-        console.log(this.book_list);
-
-
-        var books = new Books([])
         var childShowListView = new ShowListView({
             books: this.book_list
         });
+
+        var navigateApp = new NavigateBookApp({});
 
         childShowListView.render();
     }
