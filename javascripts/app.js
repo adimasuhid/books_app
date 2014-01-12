@@ -144,14 +144,13 @@ var ShowListView = Backbone.View.extend({
 
     initialize: function(options){
         this.book = options.books;
-        console.log(this.book);
     },
     el: ".book-holder",
     render: function(){
         var that = this;
-        this.books.each(function(model){
+        this.book.each(function(model){
             var childBookShowView = new ShowBook({book:model});
-            $(that.el).append(childBookView.render().el);
+            $(that.el).append(childBookShowView.render().el);
         });
     },
 });
@@ -254,23 +253,23 @@ var Router = Backbone.Router.extend({
     },
 
     showBooks: function(){
-        show_main = new ShowView();
+        show_view = new ShowView();
         show_view.render();
 
-        var childBookListView = new BookListView({
-            books: this.book_list
-        });
+        //var childBookListView = new BookListView({
+            //books: this.book_list
+        //});
 
-        childBookListView.render();
+        //childBookListView.render();
         console.log(this.book_list);
 
 
-        //var books = new Books([])
-        //var childShowListView = new ShowListView({
-            //books: books
-        //});
+        var books = new Books([])
+        var childShowListView = new ShowListView({
+            books: this.book_list
+        });
 
-        //childShowListView.render();
+        childShowListView.render();
     }
 });
 
