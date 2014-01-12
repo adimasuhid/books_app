@@ -164,7 +164,7 @@ var ShowListView = Backbone.View.extend({
             var childBookShowView = new ShowBook({book:model});
             $(that.el).append(childBookShowView.render().el);
         });
-    }
+    },
 });
 
 
@@ -197,9 +197,9 @@ JST["main_view"] = _.template(' <h1>Books App</h1> \
     <input type="text" id="book-author"> \
     <input type="submit" value="Add" id="add-button"> \
   </form> \
-  </div>
   <div id="nav"> \
-  <button id="show-book">Show</button> \
+  <button id="show-page">Show</button> \
+  </div> \
   </div> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
@@ -215,10 +215,9 @@ var MainView = Backbone.View.extend({
 
 var main_view = new MainView();
 
-var JST = {}
 JST["show_view"] = _.template(' <h1>Books Show</h1> \
   <div id="nav"> \
-  <button id="add-book">Add Book</button> \
+  <button id="add-page">Add Book</button> \
   </div> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
