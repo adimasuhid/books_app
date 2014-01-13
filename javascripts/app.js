@@ -134,9 +134,6 @@ var ShowBook = Backbone.View.extend({
         "click .edit-book" : "editBook"
     },
 
-    editBook: function() {
-        console.log(this.book_id);
-    },
 
     template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span><input type='button' class='edit-book' value='Edit' style='float: right; margin-top: -30px;'></div>"),
 
@@ -148,6 +145,10 @@ var ShowBook = Backbone.View.extend({
         }));
 
         return this
+    },
+
+    editBook: function() {
+        router.navigate("edit/" + this.book_id, {trigger: true});
     },
 
     clear: function(){
@@ -245,7 +246,8 @@ var Router = Backbone.Router.extend({
     routes: {
         ""      : "defaultPath",
         "books" : "booksIndex",
-        "show"  : "showBooks"
+        "show"  : "showBooks",
+        "edit/*id"  : "editBook"
     },
 
     defaultPath: function(){
@@ -280,7 +282,13 @@ var Router = Backbone.Router.extend({
         var navigateApp = new NavigateBookApp({});
 
         childShowListView.render();
+    },
+
+    editBook: function(){
+        $("#some_container").html("");
+        console.log("lalala");
     }
+
 });
 
 var router = new Router();
