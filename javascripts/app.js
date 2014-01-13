@@ -127,9 +127,18 @@ var BookListView = Backbone.View.extend({
 var ShowBook = Backbone.View.extend({
     initialize: function(options){
         this.book = options.book;
+        this.book_id = id;
     },
 
-    template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span></div>"),
+    events: {
+        "click .edit-book" : "editBook"
+    },
+
+    editBook: function() {
+        console.log(this.book_id);
+    },
+
+    template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span><input type='button' class='edit-book' value='Edit' style='float: right; margin-top: -30px;'></div>"),
 
     render: function(){
         this.clear();
