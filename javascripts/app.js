@@ -32,7 +32,7 @@ var BookView = Backbone.View.extend({
 });
 
 var NavigateBookApp = Backbone.View.extend({
-    el: "nav",
+    el: "#nav",
     events: {
         "click #show-page" : "showPage",
         "click #add-page"  : "addPage"
@@ -126,9 +126,6 @@ var ShowBook = Backbone.View.extend({
     initialize: function(options){
         this.book = options.book;
     },
-    events: {
-        "click #add-book" : "addBookPage"
-    },
 
     template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span></div>"),
 
@@ -140,10 +137,6 @@ var ShowBook = Backbone.View.extend({
         }));
 
         return this
-    },
-
-    addBookPage: function(){
-       router.navigate("books", {trigger:true});
     },
 
     clear: function(){
@@ -253,6 +246,7 @@ var Router = Backbone.Router.extend({
         main_view.render();
         books = this.book_list
 
+        var navigateApp = new NavigateBookApp({});
         var input_book = new InputBookView({
             books: books
         });
