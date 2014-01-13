@@ -73,11 +73,13 @@ var InputBookView = Backbone.View.extend({
     },
 
     addBook: function(e){
-        id = _.uniqueId('book_');
-        e.preventDefault();
-        books.add({title: this.book_title.val(), author: this.book_author.val(), id: id})
-        this.book_title.val("");
-        this.book_author.val("");
+        if( this.book_title.val() != "ace" && this.book_author.val() != "ace" ){
+            id = _.uniqueId('book_');
+            e.preventDefault();
+            books.add({title: this.book_title.val(), author: this.book_author.val(), id: id})
+            this.book_title.val("");
+            this.book_author.val("");
+        }
     },
 
     clearTitleDefaults: function(){
