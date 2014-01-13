@@ -100,6 +100,19 @@ var InputBookView = Backbone.View.extend({
 
 });
 
+var EditBook = Backbone.View.extend({
+    el: "#form-container",
+    initialize: function(){
+        this.book_id = id;
+        this.book = books.get(this.book_id);
+        console.log(this.book);
+    },
+
+    render: function(){
+
+    }
+});
+
 var BookListView = Backbone.View.extend({
     initialize: function(options){
         this.books = options.books;
@@ -244,9 +257,9 @@ var Router = Backbone.Router.extend({
     },
 
     routes: {
-        ""      : "defaultPath",
-        "books" : "booksIndex",
-        "show"  : "showBooks",
+        ""          : "defaultPath",
+        "books"     : "booksIndex",
+        "show"      : "showBooks",
         "edit/*id"  : "editBook"
     },
 
@@ -285,8 +298,10 @@ var Router = Backbone.Router.extend({
     },
 
     editBook: function(){
+        var edit_book = new EditBook({
+            books: this.book_list
+        });
         $("#some_container").html("");
-        console.log("lalala");
     }
 
 });
