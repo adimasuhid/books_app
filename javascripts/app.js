@@ -251,6 +251,30 @@ var ShowView = Backbone.View.extend({
 
 var show_view = new ShowView();
 
+JST["update_view"] = _.template(' <h1>Update Book</h1> \
+  <div id="form-container"> \
+  <form> \
+    <input type="text" id="book-title"> \
+    <input type="text" id="book-author"> \
+    <input type="submit" value="Update" id="add-button"> \
+  </form> \
+  <div id="nav"> \
+  </div> \
+  </div> \
+  <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
+  </div>')
+
+var UpdateView = Backbone.View.extend({
+    el: "#some_container",
+    template: JST["update_view"],
+
+    render: function(){
+        $(this.el).html(this.template());
+    }
+});
+
+var update_view = new UpdateView();
+
 var Router = Backbone.Router.extend({
     initialize: function(){
         this.book_list = new Books([])
@@ -298,10 +322,11 @@ var Router = Backbone.Router.extend({
     },
 
     editBook: function(){
+        update_view = new UpdateView();
+        update_view.render();
         var edit_book = new EditBook({
             books: this.book_list
         });
-        $("#some_container").html("");
     }
 
 });
