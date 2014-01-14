@@ -105,12 +105,23 @@ var EditBook = Backbone.View.extend({
     initialize: function(){
         this.book_id = id;
         this.book = books.get(this.book_id);
-        console.log(this.book);
+        this.book_title = $("#book-title");
+        this.book_author = $("#book-author");
+
+        this.book_title.val(this.book.get('title'));
+        this.book_author.val(this.book.get('author'));
     },
 
-    render: function(){
+    events: {
+        "click #update-button" : "updateBook"
+    },
 
+    updateBook: function(e){
+        e.preventDefault();
+        this.book.set({author: this.book_author.val(), title: this.book_title.val()});
+        router.navigate("show", {trigger: true});
     }
+
 });
 
 var BookListView = Backbone.View.extend({
@@ -256,12 +267,10 @@ JST["update_view"] = _.template(' <h1>Update Book</h1> \
   <form> \
     <input type="text" id="book-title"> \
     <input type="text" id="book-author"> \
-    <input type="submit" value="Update" id="add-button"> \
+    <input type="submit" value="Update" id="update-button"> \
   </form> \
   <div id="nav"> \
   </div> \
-  </div> \
-  <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
 
 var UpdateView = Backbone.View.extend({
