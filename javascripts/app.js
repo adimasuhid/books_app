@@ -5,10 +5,10 @@ var BookView = Backbone.View.extend({
     },
 
     events: {
-        "click" : "deleteBook",
+        "click .delete-book" : "deleteBook"
     },
 
-    template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span></div>"),
+    template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span><input type='button' class='delete-book btn' value='Delete' style='float: right; margin-top: -30px;'></div>"),
 
     render: function(){
         this.clear();
@@ -224,11 +224,12 @@ JST["main_view"] = _.template(' <h1>Books App</h1> \
   <form> \
     <input type="text" id="book-title"> \
     <input type="text" id="book-author"> \
-    <input type="submit" value="Add" id="add-button" class="btn"> \
+    <input type="submit" value="Add" id="add-button" class="btn" style="margin-top: -10px;"> \
   </form> \
   <div id="nav"> \
   <button id="show-page" class="btn">Show</button> \
   </div> \
+  </br> \
   </div> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
@@ -248,6 +249,7 @@ JST["show_view"] = _.template(' <h1>Books Show</h1> \
   <div id="nav"> \
   <button id="add-page" class="btn">Add Book</button> \
   </div> \
+  <br> \
   <div class="book-holder" style="height: 500px; border: 1px solid red;"> \
   </div>')
 
@@ -267,7 +269,7 @@ JST["update_view"] = _.template(' <h1>Update Book</h1> \
   <form> \
     <input type="text" id="book-title"> \
     <input type="text" id="book-author"> \
-    <input type="submit" value="Update" id="update-button" class="btn"> \
+    <input type="submit" value="Update" id="update-button" class="btn" style="margin-top: -10px;"> \
   </form> \
   <div id="nav"> \
   </div> \
