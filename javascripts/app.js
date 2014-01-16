@@ -102,8 +102,8 @@ var InputBookView = Backbone.View.extend({
 
 var EditBook = Backbone.View.extend({
     el: "#form-container",
-    initialize: function(){
-        this.book_id = id;
+    initialize: function(options){
+        this.book_id = options.book_id;
         this.book = books.get(this.book_id);
         this.book_title = $("#book-title");
         this.book_author = $("#book-author");
@@ -151,7 +151,6 @@ var BookListView = Backbone.View.extend({
 var ShowBook = Backbone.View.extend({
     initialize: function(options){
         this.book = options.book;
-        this.book_id = id;
     },
 
     events: {
@@ -162,7 +161,6 @@ var ShowBook = Backbone.View.extend({
     template: _.template("<div class='book' style='border: 1px solid black' data-id=<%= id %>><h2><%= title %></h2><span><%= author %></span><input type='button' class='edit-book btn' value='Edit' style='float: right; margin-top: -30px;'></div>"),
 
     render: function(){
-        this.clear();
         $(this.el).html(this.template({
             title: this.book.get("title"),
             author: this.book.get("author")
@@ -171,8 +169,9 @@ var ShowBook = Backbone.View.extend({
         return this
     },
 
-    editBook: function() {
-        router.navigate("edit/" + this.book_id, {trigger: true});
+    editBook: function(e) {
+        e.preventDefault();
+        router.navigate("edit/" + this.book.id, {trigger: true});
     },
 
     clear: function(){
@@ -295,7 +294,7 @@ var Router = Backbone.Router.extend({
         ""          : "defaultPath",
         "books"     : "booksIndex",
         "show"      : "showBooks",
-        "edit/*id"  : "editBook"
+        "edit/:id"  : "editBook"
     },
 
     defaultPath: function(){
@@ -332,12 +331,12 @@ var Router = Backbone.Router.extend({
         childShowListView.render();
     },
 
-    editBook: function(){
+    editBook: function(e){
         update_view = new UpdateView();
         update_view.render();
-        var edit_book = new EditBook({
-            books: this.book_list
-        });
+
+        var update_book = new EditBook({book_id: e});
+
     }
 
 });
